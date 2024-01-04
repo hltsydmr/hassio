@@ -89,7 +89,7 @@ variables:
 # we restart the script.
 mode: restart
 max_exceeded: silent
-
+condition:
 trigger:
   platform: state
   entity_id: !input motion_entity
