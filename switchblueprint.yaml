@@ -39,68 +39,56 @@ blueprint:
       selector:
         time:
 
-    monday:
-      name: Monday
-      default: false
+    weekday_options:
+      name: Weekdays
+      description: Select the days of the week you would like the automation to run.
+        You must select "Enable the time options" above for the weekdays selections to work.
+      default:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
       selector:
-        boolean:
-    tuesday:
-      name: Tuesday
-      default: false
-      selector:
-        boolean:
-    wednesday:
-      name: Wednesday
-      default: false
-      selector:
-        boolean:
-    thursday:
-      name: Thursday
-      default: false
-      selector:
-        boolean:
-    friday:
-      name: Friday
-      default: false
-      selector:
-        boolean:
-    saturday:
-      name: Saturday
-      default: false
-      selector:
-        boolean:
-    sunday:
-      name: Sunday
-      default: false
-      selector:
-        boolean:
-
-variables:
-  mon: !input monday
-  tue: !input tuesday
-  wed: !input wednesday
-  thu: !input thursday
-  fri: !input friday
-  sat: !input saturday
-  sun: !input sunday
-  days: [mon, tue, wed, thu, fri, sat, sun]
+        select:
+          multiple: true
+          mode: list
+          options:
+            - label: Monday
+              value: "mon"
+            - label: Tuesday
+              value: "tue"
+            - label: Wednesday
+              value: "wed"
+            - label: Thursday
+              value: "thu"
+            - label: Friday
+              value: "fri"
+            - label: Saturday
+              value: "sat"
+            - label: Sunday
+              value: "sun"     
 
 # If motion is detected within the delay,
 # we restart the script.
 mode: restart
 max_exceeded: silent
-condition:
+
 trigger:
   platform: state
   entity_id: !input motion_entity
   from: "off"
   to: "on"
 
+condition:
+  - condition: time
+    after: !input schedule_start
+    before: !input schedule_stop
+    weekday: !input weekday_options
+
 action:
-  - service: logbook.log
-    data_template:
-      name: HomeKit
-      message: 'sensor state: {{ days[now().weekday()] }}'
   - alias: "Turn on the switch"
     service: switch.turn_on
     target: !input light_target
