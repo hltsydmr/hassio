@@ -96,15 +96,12 @@ trigger:
   from: "off"
   to: "on"
 
-condition:
-  - condition: time
-    after: !input schedule_start
-    before: !input schedule_stop
-
-  - condition: template
-    value_template: '{{ days[now().weekday()] }}'
-
 action:
+  - service: system_log.write
+    data_template:
+    level: error
+    logger: homeassistant.components.mylogger
+    message: "sensor state: {{ days[now().weekday()] }}"
   - alias: "Turn on the switch"
     service: switch.turn_on
     target: !input light_target
