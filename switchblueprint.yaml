@@ -97,11 +97,10 @@ trigger:
   to: "on"
 
 action:
-  - service: system_log.write
+  - service: logbook.log
     data_template:
-      level: error
-      logger: homeassistant.components.mylogger
-      message: "sensor state: {{ days[now().weekday()] }}"
+      name: HomeKit
+      message: 'sensor state: {{ days[now().weekday()] }}'
   - alias: "Turn on the switch"
     service: switch.turn_on
     target: !input light_target
